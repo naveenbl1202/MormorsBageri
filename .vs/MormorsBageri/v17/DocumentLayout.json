@@ -1,0 +1,261 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\models\\butik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:models\\butik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\models\\best\u00E4llning.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:models\\best\u00E4llning.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\controllers\\produktercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:controllers\\produktercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\controllers\\butikercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:controllers\\butikercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\controllers\\best\u00E4llningarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:controllers\\best\u00E4llningarcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\dtos\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:dtos\\registerdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\models\\produkt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:models\\produkt.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\models\\anv\u00E4ndare.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:models\\anv\u00E4ndare.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|c:\\users\\navee\\downloads\\mormorsbageri-master\\mormorsbageri.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{CA944F0F-E0BE-4511-DC18-9645EE36CD3E}|MormorsBageri.csproj|solutionrelative:mormorsbageri.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "Data\\AppDbContext.cs",
+              "ViewState": "AQIAAAQAAAAAAAAAAAAUwA0AAAAeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:12:38.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Butik.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Butik.cs",
+              "RelativeDocumentMoniker": "Models\\Butik.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Butik.cs",
+              "RelativeToolTip": "Models\\Butik.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:10:57.905Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Best\u00E4llning.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Best\u00E4llning.cs",
+              "RelativeDocumentMoniker": "Models\\Best\u00E4llning.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Best\u00E4llning.cs",
+              "RelativeToolTip": "Models\\Best\u00E4llning.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:10:38.68Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:09:04.956Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Controllers\\AuthController.cs",
+              "ViewState": "AQIAAJQAAAAAAAAAAAAUwKAAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:13:04.698Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ProdukterController.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\ProdukterController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ProdukterController.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\ProdukterController.cs",
+              "RelativeToolTip": "Controllers\\ProdukterController.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAUwBUAAAADAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:14:16.034Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ButikerController.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\ButikerController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ButikerController.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\ButikerController.cs",
+              "RelativeToolTip": "Controllers\\ButikerController.cs",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAUwBUAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:13:57.309Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Best\u00E4llningarController.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\Best\u00E4llningarController.cs",
+              "RelativeDocumentMoniker": "Controllers\\Best\u00E4llningarController.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Controllers\\Best\u00E4llningarController.cs",
+              "RelativeToolTip": "Controllers\\Best\u00E4llningarController.cs",
+              "ViewState": "AQIAACsAAAAAAAAAAAAUwDMAAAADAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:03:08.309Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "RegisterDTO.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\DTOs\\RegisterDTO.cs",
+              "RelativeDocumentMoniker": "DTOs\\RegisterDTO.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\DTOs\\RegisterDTO.cs",
+              "RelativeToolTip": "DTOs\\RegisterDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:12:20.028Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "LoginDTO.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\DTOs\\LoginDTO.cs",
+              "RelativeDocumentMoniker": "DTOs\\LoginDTO.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\DTOs\\LoginDTO.cs",
+              "RelativeToolTip": "DTOs\\LoginDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:12:01.089Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Produkt.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Produkt.cs",
+              "RelativeDocumentMoniker": "Models\\Produkt.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Produkt.cs",
+              "RelativeToolTip": "Models\\Produkt.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T12:11:15.354Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAABcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-06T10:00:09.673Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Anv\u00E4ndare.cs",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Anv\u00E4ndare.cs",
+              "RelativeDocumentMoniker": "Models\\Anv\u00E4ndare.cs",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\Models\\Anv\u00E4ndare.cs",
+              "RelativeToolTip": "Models\\Anv\u00E4ndare.cs",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAcwA0AAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-07T09:49:02.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "MormorsBageri.csproj",
+              "DocumentMoniker": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\MormorsBageri.csproj",
+              "RelativeDocumentMoniker": "MormorsBageri.csproj",
+              "ToolTip": "C:\\Users\\navee\\Downloads\\MormorsBageri-master\\MormorsBageri.csproj",
+              "RelativeToolTip": "MormorsBageri.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-03-07T09:55:38.707Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
