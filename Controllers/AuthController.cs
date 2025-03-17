@@ -27,133 +27,219 @@ namespace MormorsBageri.Controllers
         [HttpPost("initial-admin-setup")]
         public IActionResult InitialAdminSetup([FromBody] RegisterDTO register)
         {
+            Console.WriteLine($"Initial admin setup attempt: Användarnamn={register.Användarnamn}, Roll={register.Roll}");
             if (_context.Användare.Any(u => u.Roll == Roller.Admin))
             {
-                return BadRequest("En Admin-användare finns redan!");
+                Console.WriteLine("Setup failed: An Admin already exists");
+                return BadRequest(new { error = "En Admin-användare finns redan!" });
             }
 
             if (register.Roll != Roller.Admin)
             {
-                return BadRequest("Den första användaren måste vara en Admin!");
+                Console.WriteLine("Setup failed: First user must be Admin");
+                return BadRequest(new { error = "Den första användaren måste vara en Admin!" });
             }
 
             if (_context.Användare.Any(u => u.Användarnamn == register.Användarnamn))
             {
-                return BadRequest("Användarnamnet finns redan!");
+                Console.WriteLine($"Setup failed: Username '{register.Användarnamn}' already exists");
+                return BadRequest(new { error = $"Användarnamnet '{register.Användarnamn}' finns redan!" });
             }
 
-            var användare = new Användare
+            try
             {
-                Användarnamn = register.Användarnamn,
-                LösenordHash = BCrypt.Net.BCrypt.HashPassword(register.Lösenord),
-                Roll = Roller.Admin,
-                Email = register.Email,
-                Låst = false
-            };
+                var användare = new Användare
+                {
+                    Användarnamn = register.Användarnamn,
+                    LösenordHash = BCrypt.Net.BCrypt.HashPassword(register.Lösenord),
+                    Roll = Roller.Admin,
+                    Email = register.Email,
+                    Låst = false
+                };
 
-            _context.Användare.Add(användare);
-            _context.SaveChanges();
+                _context.Användare.Add(användare);
+                _context.SaveChanges();
 
-            var token = SkapaJwtToken(användare);
-            return Ok(new { Token = token });
+                var token = SkapaJwtToken(användare);
+                var response = new { Token = token, Roll = användare.Roll.ToString() }; // Explicitly convert to string
+                Console.WriteLine($"Setup successful: Admin '{register.Användarnamn}' created, Response={System.Text.Json.JsonSerializer.Serialize(response)}");
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Setup failed: Database error - {ex.Message}");
+                return StatusCode(500, new { error = "Fel vid skapande av admin. Kontakta support." });
+            }
         }
 
         [HttpPost("registrera")]
         [Authorize(Roles = "Admin")]
         public IActionResult Registrera([FromBody] RegisterDTO register)
         {
+            Console.WriteLine($"Register attempt: Användarnamn={register.Användarnamn}, Roll={register.Roll}");
             if (_context.Användare.Any(u => u.Användarnamn == register.Användarnamn))
             {
-                return BadRequest("Användarnamnet finns redan!");
+                Console.WriteLine($"Register failed: Username '{register.Användarnamn}' already exists");
+                return BadRequest(new { error = $"Användarnamnet '{register.Användarnamn}' finns redan!" });
             }
 
-            var användare = new Användare
+            try
             {
-                Användarnamn = register.Användarnamn,
-                LösenordHash = BCrypt.Net.BCrypt.HashPassword(register.Lösenord),
-                Roll = register.Roll,
-                Email = register.Email,
-                Låst = register.Låst
-            };
+                var användare = new Användare
+                {
+                    Användarnamn = register.Användarnamn,
+                    LösenordHash = BCrypt.Net.BCrypt.HashPassword(register.Lösenord),
+                    Roll = register.Roll,
+                    Email = register.Email,
+                    Låst = register.Låst
+                };
 
-            _context.Användare.Add(användare);
-            _context.SaveChanges();
-            return Ok("Användare registrerad!");
+                _context.Användare.Add(användare);
+                _context.SaveChanges();
+                Console.WriteLine($"Register successful: User '{register.Användarnamn}' created");
+                return Ok(new { message = "Användare registrerad!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Register failed: Database error - {ex.Message}");
+                return StatusCode(500, new { error = "Fel vid registrering av användare. Kontakta support." });
+            }
         }
 
         [HttpPost("login")]
         public IActionResult LoggaIn([FromBody] LoginDTO login)
         {
+            Console.WriteLine($"Login attempt: Användarnamn={login.Användarnamn}, Lösenord provided={login.Lösenord != null}");
+            if (string.IsNullOrWhiteSpace(login.Användarnamn) || string.IsNullOrWhiteSpace(login.Lösenord))
+            {
+                Console.WriteLine("Login failed: Missing username or password");
+                return BadRequest(new { error = "Användarnamn och lösenord krävs." });
+            }
+
             var användare = _context.Användare.FirstOrDefault(u => u.Användarnamn == login.Användarnamn);
             if (användare == null)
             {
-                Console.WriteLine($"User '{login.Användarnamn}' not found.");
-                return Unauthorized("Fel inloggning eller konto är låst");
-            }
-            if (användare.Låst)
-            {
-                Console.WriteLine($"User '{login.Användarnamn}' is locked.");
-                return Unauthorized("Fel inloggning eller konto är låst");
-            }
-            if (!BCrypt.Net.BCrypt.Verify(login.Lösenord, användare.LösenordHash))
-            {
-                Console.WriteLine($"Password verification failed for user '{login.Användarnamn}'.");
-                return Unauthorized("Fel inloggning eller konto är låst");
+                Console.WriteLine($"Login failed: User '{login.Användarnamn}' not found");
+                return Unauthorized(new { error = "Fel användarnamn eller lösenord." });
             }
 
-            var token = SkapaJwtToken(användare);
-            return Ok(new { Token = token });
+            if (användare.Låst)
+            {
+                Console.WriteLine($"Login failed: User '{login.Användarnamn}' is locked");
+                return Unauthorized(new { error = "Kontot är låst." });
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(login.Lösenord, användare.LösenordHash))
+            {
+                Console.WriteLine($"Login failed: Incorrect password for '{login.Användarnamn}'");
+                return Unauthorized(new { error = "Fel användarnamn eller lösenord." });
+            }
+
+            try
+            {
+                var token = SkapaJwtToken(användare);
+                var response = new { Token = token, Roll = användare.Roll.ToString() }; // Explicitly convert to string
+                Console.WriteLine($"Login successful: Response={System.Text.Json.JsonSerializer.Serialize(response)}");
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Login failed: Token generation error - {ex.Message}");
+                return StatusCode(500, new { error = "Fel vid generering av token. Kontakta support." });
+            }
         }
 
         [HttpDelete("ta-bort-användare/{användarnamn}")]
         [Authorize(Roles = "Admin")]
         public IActionResult TaBortAnvändare(string användarnamn)
         {
+            Console.WriteLine($"Delete user attempt: Användarnamn={användarnamn}");
             var användare = _context.Användare.FirstOrDefault(u => u.Användarnamn == användarnamn);
-            if (användare == null) return NotFound("Användaren finns inte");
-            _context.Användare.Remove(användare);
-            _context.SaveChanges();
-            return Ok("Användare borttagen!");
+            if (användare == null)
+            {
+                Console.WriteLine($"Delete failed: User '{användarnamn}' not found");
+                return NotFound(new { error = $"Användaren '{användarnamn}' finns inte." });
+            }
+
+            try
+            {
+                _context.Användare.Remove(användare);
+                _context.SaveChanges();
+                Console.WriteLine($"Delete successful: User '{användarnamn}' removed");
+                return Ok(new { message = "Användare borttagen!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Delete failed: Database error - {ex.Message}");
+                return StatusCode(500, new { error = "Fel vid borttagning av användare. Kontakta support." });
+            }
         }
 
         [HttpPut("lås-användare/{användarnamn}")]
         [Authorize(Roles = "Admin")]
         public IActionResult LåsAnvändare(string användarnamn, [FromBody] bool låst)
         {
+            Console.WriteLine($"Lock user attempt: Användarnamn={användarnamn}, Låst={låst}");
             var användare = _context.Användare.FirstOrDefault(u => u.Användarnamn == användarnamn);
-            if (användare == null) return NotFound("Användaren finns inte");
-            användare.Låst = låst;
-            _context.SaveChanges();
-            return Ok($"Användare {användarnamn} är nu {(låst ? "låst" : "olåst")}");
+            if (användare == null)
+            {
+                Console.WriteLine($"Lock failed: User '{användarnamn}' not found");
+                return NotFound(new { error = $"Användaren '{användarnamn}' finns inte." });
+            }
+
+            try
+            {
+                användare.Låst = låst;
+                _context.SaveChanges();
+                Console.WriteLine($"Lock successful: User '{användarnamn}' is now {(låst ? "låst" : "olåst")}");
+                return Ok(new { message = $"Användare '{användarnamn}' är nu {(låst ? "låst" : "olåst")}" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lock failed: Database error - {ex.Message}");
+                return StatusCode(500, new { error = "Fel vid låsning av användare. Kontakta support." });
+            }
         }
 
-        // New endpoint for Admin to change a user's password
         [HttpPut("ändra-lösenord/{användarnamn}")]
         [Authorize(Roles = "Admin")]
         public IActionResult ÄndraLösenord(string användarnamn, [FromBody] string nyttLösenord)
         {
+            Console.WriteLine($"Change password attempt: Användarnamn={användarnamn}");
             if (string.IsNullOrWhiteSpace(nyttLösenord))
             {
-                return BadRequest("Nytt lösenord får inte vara tomt!");
+                Console.WriteLine("Change password failed: New password is empty");
+                return BadRequest(new { error = "Nytt lösenord får inte vara tomt!" });
             }
 
             var användare = _context.Användare.FirstOrDefault(u => u.Användarnamn == användarnamn);
             if (användare == null)
             {
-                return NotFound("Användaren finns inte");
+                Console.WriteLine($"Change password failed: User '{användarnamn}' not found");
+                return NotFound(new { error = $"Användaren '{användarnamn}' finns inte." });
             }
 
-            användare.LösenordHash = BCrypt.Net.BCrypt.HashPassword(nyttLösenord);
-            _context.SaveChanges();
-            return Ok($"Lösenordet för användare {användarnamn} har uppdaterats!");
+            try
+            {
+                användare.LösenordHash = BCrypt.Net.BCrypt.HashPassword(nyttLösenord);
+                _context.SaveChanges();
+                Console.WriteLine($"Change password successful: Password updated for '{användarnamn}'");
+                return Ok(new { message = $"Lösenordet för användare '{användarnamn}' har uppdaterats!" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Change password failed: Database error - {ex.Message}");
+                return StatusCode(500, new { error = "Fel vid uppdatering av lösenord. Kontakta support." });
+            }
         }
 
         private string SkapaJwtToken(Användare användare)
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, användare.Användarnamn),
-                new Claim(ClaimTypes.Role, användare.Roll.ToString())
+                new Claim(ClaimTypes.Name, användare.Användarnamn ?? "Unknown"),
+                new Claim(ClaimTypes.Role, användare.Roll.ToString()),
+                new Claim("Roll", användare.Roll.ToString())
             };
 
             var keyValue = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is missing.");

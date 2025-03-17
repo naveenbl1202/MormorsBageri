@@ -4,7 +4,8 @@ using System.Text;
 using MormorsBageri.Data;
 using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.EntityFrameworkCore;
-using BCrypt.Net; // Added for hash generation
+using MormorsBageri.Services;
+using Microsoft.Extensions.Logging; // Added for logging
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,11 +15,24 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 23))));
 
-// Temporary hash generation for debugging login issue
+builder.Services.AddScoped<EmailService>();
 
-var storedHash = "$2a$11$FRm5v5GAaLAfNaBCWWdM0epr7aVUL4tcdh7wr5mChGmsmuoPBkHBS";
-var isValid = BCrypt.Net.BCrypt.Verify("admin123", storedHash);
-Console.WriteLine($"Verification of 'admin123' with hash: {isValid}");
+// Add logging
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+    logging.SetMinimumLevel(LogLevel.Information);
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.WithOrigins("http://localhost:5177")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -38,10 +52,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Comment out HTTPS redirection for now (can be re-enabled with proper setup)
-// app.UseHttpsRedirection();
+// Configure the HTTP request pipeline
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"error\": \"Ett oväntat fel inträffade. Kontakta support.\"}");
+    });
+});
+
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Explicitly set the port (optional, only if not set elsewhere)
+app.Urls.Add("http://localhost:5139");
 
 app.Run();

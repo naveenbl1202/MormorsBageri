@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MormorsBageri.Data;
 
@@ -11,9 +12,11 @@ using MormorsBageri.Data;
 namespace MormorsBageri.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250315221447_AddLåstColumnToButiker")]
+    partial class AddLåstColumnToButiker
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,49 @@ namespace MormorsBageri.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("Butik", b =>
+                {
+                    b.Property<int>("ButikId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ButikId"));
+
+                    b.Property<string>("Besöksadress")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("BrödansvarigNamn")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("BrödansvarigTelefon")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ButikNamn")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ButikNummer")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ButikschefNamn")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ButikschefTelefon")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Fakturaadress")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool?>("Låst")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Telefonnummer")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ButikId");
+
+                    b.ToTable("Butiker");
+                });
 
             modelBuilder.Entity("MormorsBageri.Models.Användare", b =>
                 {
@@ -62,8 +108,7 @@ namespace MormorsBageri.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("BeställningId"));
 
                     b.Property<string>("Beställare")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("Beställningsdatum")
                         .HasColumnType("datetime(6)");
@@ -75,12 +120,9 @@ namespace MormorsBageri.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Säljare")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("BeställningId");
-
-                    b.HasIndex("ButikId");
 
                     b.ToTable("Beställningar");
                 });
@@ -112,59 +154,7 @@ namespace MormorsBageri.Migrations
 
                     b.HasIndex("BeställningId");
 
-                    b.HasIndex("ProduktId");
-
                     b.ToTable("Beställningsdetaljer");
-                });
-
-            modelBuilder.Entity("MormorsBageri.Models.Butik", b =>
-                {
-                    b.Property<int>("ButikId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ButikId"));
-
-                    b.Property<string>("Besöksadress")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<string>("BrödansvarigNamn")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("BrödansvarigTelefon")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ButikNamn")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("ButikNummer")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("ButikschefNamn")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("ButikschefTelefon")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Fakturaadress")
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<bool?>("Låst")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Telefonnummer")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("ButikId");
-
-                    b.ToTable("Butiker");
                 });
 
             modelBuilder.Entity("MormorsBageri.Models.Produkt", b =>
@@ -186,17 +176,6 @@ namespace MormorsBageri.Migrations
                     b.ToTable("Produkter");
                 });
 
-            modelBuilder.Entity("MormorsBageri.Models.Beställning", b =>
-                {
-                    b.HasOne("MormorsBageri.Models.Butik", "Butik")
-                        .WithMany()
-                        .HasForeignKey("ButikId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Butik");
-                });
-
             modelBuilder.Entity("MormorsBageri.Models.Beställningsdetalj", b =>
                 {
                     b.HasOne("MormorsBageri.Models.Beställning", null)
@@ -204,14 +183,6 @@ namespace MormorsBageri.Migrations
                         .HasForeignKey("BeställningId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("MormorsBageri.Models.Produkt", "Produkt")
-                        .WithMany()
-                        .HasForeignKey("ProduktId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Produkt");
                 });
 
             modelBuilder.Entity("MormorsBageri.Models.Beställning", b =>

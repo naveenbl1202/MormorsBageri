@@ -21,6 +21,18 @@ namespace MormorsBageri.Data
                 .HasForeignKey(bd => bd.BeställningId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Beställning>()
+                .HasOne(b => b.Butik)
+                .WithMany()
+                .HasForeignKey(b => b.ButikId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Beställningsdetalj>()
+                .HasOne(bd => bd.Produkt)
+                .WithMany()
+                .HasForeignKey(bd => bd.ProduktId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Användare>()
                 .HasIndex(u => u.Användarnamn)
                 .IsUnique();
