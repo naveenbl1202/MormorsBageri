@@ -61,7 +61,7 @@ namespace MormorsBageri.Controllers
                 _context.SaveChanges();
 
                 var token = SkapaJwtToken(användare);
-                var response = new { Token = token, Roll = användare.Roll.ToString() }; // Explicitly convert to string
+                var response = new { Token = token, Roll = användare.Roll.ToString() };
                 Console.WriteLine($"Setup successful: Admin '{register.Användarnamn}' created, Response={System.Text.Json.JsonSerializer.Serialize(response)}");
                 return Ok(response);
             }
@@ -138,7 +138,7 @@ namespace MormorsBageri.Controllers
             try
             {
                 var token = SkapaJwtToken(användare);
-                var response = new { Token = token, Roll = användare.Roll.ToString() }; // Explicitly convert to string
+                var response = new { Token = token, Roll = användare.Roll.ToString() };
                 Console.WriteLine($"Login successful: Response={System.Text.Json.JsonSerializer.Serialize(response)}");
                 return Ok(response);
             }

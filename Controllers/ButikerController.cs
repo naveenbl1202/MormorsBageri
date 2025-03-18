@@ -35,7 +35,7 @@ namespace MormorsBageri.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Säljare")] // Updated: Added Säljare
         public IActionResult LäggTillButik([FromBody] Butik butik)
         {
             if (butik == null)
