@@ -1,7 +1,9 @@
+// ButikerController.cs
 using Microsoft.AspNetCore.Mvc;
 using MormorsBageri.Data;
 using MormorsBageri.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace MormorsBageri.Controllers
 {
@@ -19,12 +21,12 @@ namespace MormorsBageri.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Säljare,Planerare")]
-        public IActionResult HämtaButiker()
+        public async Task<ActionResult<IEnumerable<Butik>>> HämtaButiker()
         {
             try
             {
-                var butiker = _context.Butiker.ToList();
-                Console.WriteLine($"Fetched {butiker.Count} butiker");
+                var butiker = await _context.Butiker.ToListAsync();
+                Console.WriteLine($"Fetched {butiker.Count} butiker: {System.Text.Json.JsonSerializer.Serialize(butiker)}");
                 return Ok(butiker);
             }
             catch (Exception ex)
@@ -35,8 +37,8 @@ namespace MormorsBageri.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Säljare")] // Updated: Added Säljare
-        public IActionResult LäggTillButik([FromBody] Butik butik)
+        [Authorize(Roles = "Admin,Säljare")]
+        public async Task<ActionResult<Butik>> LäggTillButik([FromBody] Butik butik)
         {
             if (butik == null)
             {
@@ -48,6 +50,11 @@ namespace MormorsBageri.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (string.IsNullOrWhiteSpace(butik.ButikNamn) || string.IsNullOrWhiteSpace(butik.ButikNummer))
+            {
+                return BadRequest(new { error = "ButikNamn och ButikNummer är obligatoriska." });
+            }
+
             if (_context.Butiker.Any(b => b.ButikNamn == butik.ButikNamn))
             {
                 return Conflict(new { error = $"Butiken '{butik.ButikNamn}' finns redan." });
@@ -56,7 +63,8 @@ namespace MormorsBageri.Controllers
             try
             {
                 _context.Butiker.Add(butik);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Added butik: {System.Text.Json.JsonSerializer.Serialize(butik)}");
                 return CreatedAtAction(nameof(HämtaButiker), new { id = butik.ButikId }, butik);
             }
             catch (Exception ex)
@@ -68,7 +76,7 @@ namespace MormorsBageri.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UppdateraButik(int id, [FromBody] Butik uppdateradButik)
+        public async Task<IActionResult> UppdateraButik(int id, [FromBody] Butik uppdateradButik)
         {
             if (id != uppdateradButik.ButikId)
             {
@@ -80,7 +88,7 @@ namespace MormorsBageri.Controllers
                 return BadRequest(ModelState);
             }
 
-            var butik = _context.Butiker.FirstOrDefault(b => b.ButikId == id);
+            var butik = await _context.Butiker.FirstOrDefaultAsync(b => b.ButikId == id);
             if (butik == null)
             {
                 return NotFound(new { error = $"Butik med ID {id} finns inte." });
@@ -104,7 +112,7 @@ namespace MormorsBageri.Controllers
                 butik.BrödansvarigTelefon = uppdateradButik.BrödansvarigTelefon;
                 butik.Låst = uppdateradButik.Låst;
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok(new { message = $"Butik med ID {id} har uppdaterats." });
             }
             catch (Exception ex)
@@ -115,12 +123,12 @@ namespace MormorsBageri.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public IActionResult TaBortButik(int id)
+        [Authorize(Roles = "Admin,Säljare")]
+        public async Task<IActionResult> TaBortButik(int id)
         {
             try
             {
-                var butik = _context.Butiker.FirstOrDefault(b => b.ButikId == id);
+                var butik = await _context.Butiker.FirstOrDefaultAsync(b => b.ButikId == id);
                 if (butik == null)
                 {
                     return NotFound(new { error = $"Butik med ID {id} finns inte." });
@@ -132,7 +140,8 @@ namespace MormorsBageri.Controllers
                 }
 
                 _context.Butiker.Remove(butik);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"Deleted butik with ID {id}");
                 return Ok(new { message = $"Butik med ID {id} har tagits bort." });
             }
             catch (Exception ex)
@@ -144,18 +153,18 @@ namespace MormorsBageri.Controllers
 
         [HttpPut("{id}/lås")]
         [Authorize(Roles = "Admin")]
-        public IActionResult LåsButik(int id, [FromBody] bool låst)
+        public async Task<IActionResult> LåsButik(int id, [FromBody] bool låst)
         {
             try
             {
-                var butik = _context.Butiker.FirstOrDefault(b => b.ButikId == id);
+                var butik = await _context.Butiker.FirstOrDefaultAsync(b => b.ButikId == id);
                 if (butik == null)
                 {
                     return NotFound(new { error = $"Butik med ID {id} finns inte." });
                 }
 
                 butik.Låst = låst;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok(new { message = $"Butik '{butik.ButikNamn}' är nu {(låst ? "låst" : "olåst")}." });
             }
             catch (Exception ex)

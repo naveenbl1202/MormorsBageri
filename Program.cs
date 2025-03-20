@@ -5,9 +5,12 @@ using MormorsBageri.Data;
 using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.EntityFrameworkCore;
 using MormorsBageri.Services;
-using Microsoft.Extensions.Logging; // Added for logging
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add environment variables to configuration (for Docker)
+builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -28,7 +31,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.WithOrigins("http://localhost:5174")
+        builder.WithOrigins("http://localhost:5173")
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
@@ -68,7 +71,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// Explicitly set the port (optional, only if not set elsewhere)
-app.Urls.Add("http://localhost:5139");
+// Use environment variable for port if set (e.g., in Docker), otherwise default to 5139
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5139";
+app.Urls.Add($"http://0.0.0.0:{port}");
 
 app.Run();

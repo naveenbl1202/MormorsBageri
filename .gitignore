@@ -2,4 +2,6 @@
 *.vsidx
 bin/
 obj/
+out/
+.env
 appsettings.json

@@ -1,0 +1,34 @@
+﻿version: '3.8'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5139:80"
+    environment:
+      - PORT=80
+      - ConnectionStrings__DefaultConnection=Server=db;Database=mormorsbageridb;User=root;Password=root;Port=3306;
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__Issuer=MormorsBageri
+      - Jwt__Audience=MormorsApp
+      - Email__FromEmail=mormorsbageri@gmail.com
+      - Email__SmtpHost=smtp.gmail.com
+      - Email__SmtpPort=587
+      - Email__Username=mormorsbageri@gmail.com
+      - Email__Password=${EMAIL_PASSWORD}
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mormorsbageridb
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

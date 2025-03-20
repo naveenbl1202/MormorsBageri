@@ -1,3 +1,4 @@
+// BeställningarController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MormorsBageri.Data;
@@ -24,7 +25,7 @@ namespace MormorsBageri.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Säljare,Planerare")]
-        public IActionResult HämtaBeställningar(
+        public async Task<ActionResult<IEnumerable<Beställning>>> HämtaBeställningar(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] int? butikId = null,
@@ -35,6 +36,8 @@ namespace MormorsBageri.Controllers
             {
                 var query = _context.Beställningar
                     .Include(b => b.Beställningsdetaljer)
+                    .ThenInclude(bd => bd.Produkt)
+                    .Include(b => b.Butik)
                     .AsQueryable();
 
                 if (butikId.HasValue)
@@ -44,12 +47,14 @@ namespace MormorsBageri.Controllers
                 if (endDate.HasValue)
                     query = query.Where(b => b.Beställningsdatum <= endDate.Value);
 
-                var total = query.Count();
-                var beställningar = query
+                var total = await query.CountAsync();
+                var beställningar = await query
                     .OrderBy(b => b.Beställningsdatum)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
-                    .ToList();
+                    .ToListAsync();
+
+                Console.WriteLine($"Fetched {beställningar.Count} beställningar: {System.Text.Json.JsonSerializer.Serialize(beställningar)}");
 
                 return Ok(new
                 {
@@ -69,14 +74,18 @@ namespace MormorsBageri.Controllers
 
         [HttpGet("{butikId}")]
         [Authorize(Roles = "Admin,Säljare,Planerare")]
-        public IActionResult HämtaBeställningarFörButik(int butikId)
+        public async Task<ActionResult<IEnumerable<Beställning>>> HämtaBeställningarFörButik(int butikId)
         {
             try
             {
-                var beställningar = _context.Beställningar
+                var beställningar = await _context.Beställningar
                     .Where(b => b.ButikId == butikId)
                     .Include(b => b.Beställningsdetaljer)
-                    .ToList();
+                    .ThenInclude(bd => bd.Produkt)
+                    .Include(b => b.Butik)
+                    .ToListAsync();
+
+                Console.WriteLine($"Fetched {beställningar.Count} beställningar for butik {butikId}: {System.Text.Json.JsonSerializer.Serialize(beställningar)}");
                 return Ok(beställningar);
             }
             catch (Exception ex)
@@ -87,7 +96,7 @@ namespace MormorsBageri.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Säljare")]
+        [Authorize(Roles = "Admin,Säljare")]
         public async Task<IActionResult> SkapaBeställning([FromBody] Beställning beställning)
         {
             if (!ModelState.IsValid)
@@ -97,7 +106,7 @@ namespace MormorsBageri.Controllers
 
             try
             {
-                var butik = _context.Butiker.FirstOrDefault(b => b.ButikId == beställning.ButikId);
+                var butik = await _context.Butiker.FirstOrDefaultAsync(b => b.ButikId == beställning.ButikId);
                 if (butik == null)
                 {
                     return BadRequest(new { error = "Butiken finns inte." });
@@ -112,8 +121,8 @@ namespace MormorsBageri.Controllers
                 _context.Beställningar.Add(beställning);
                 await _context.SaveChangesAsync();
 
-                var planerare = _context.Användare.Where(u => u.Roll == Roller.Planerare).ToList();
-                var admins = _context.Användare.Where(u => u.Roll == Roller.Admin).ToList();
+                var planerare = await _context.Användare.Where(u => u.Roll == Roller.Planerare).ToListAsync();
+                var admins = await _context.Användare.Where(u => u.Roll == Roller.Admin).ToListAsync();
                 foreach (var user in planerare.Concat(admins))
                 {
                     if (!string.IsNullOrEmpty(user.Email))
@@ -126,6 +135,7 @@ namespace MormorsBageri.Controllers
                     }
                 }
 
+                Console.WriteLine($"Created beställning: {System.Text.Json.JsonSerializer.Serialize(beställning)}");
                 return CreatedAtAction(nameof(HämtaBeställningar), new { id = beställning.BeställningId }, beställning);
             }
             catch (Exception ex)
@@ -136,7 +146,7 @@ namespace MormorsBageri.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Planerare")]
+        [Authorize(Roles = "Admin,Planerare")]
         public async Task<IActionResult> UppdateraBeställning(int id, [FromBody] Beställning uppdateradBeställning)
         {
             if (!ModelState.IsValid)
@@ -146,9 +156,9 @@ namespace MormorsBageri.Controllers
 
             try
             {
-                var beställning = _context.Beställningar
+                var beställning = await _context.Beställningar
                     .Include(b => b.Beställningsdetaljer)
-                    .FirstOrDefault(b => b.BeställningId == id);
+                    .FirstOrDefaultAsync(b => b.BeställningId == id);
                 if (beställning == null)
                 {
                     return NotFound(new { error = $"Beställning med ID {id} hittades inte." });
@@ -159,7 +169,7 @@ namespace MormorsBageri.Controllers
                 beställning.Beställningsdetaljer = uppdateradBeställning.Beställningsdetaljer;
                 await _context.SaveChangesAsync();
 
-                var säljare = _context.Användare.FirstOrDefault(u => u.Användarnamn == beställning.Säljare);
+                var säljare = await _context.Användare.FirstOrDefaultAsync(u => u.Användarnamn == beställning.Säljare);
                 if (säljare != null && !string.IsNullOrEmpty(säljare.Email))
                 {
                     await _emailService.SendEmailAsync(
@@ -169,6 +179,7 @@ namespace MormorsBageri.Controllers
                     );
                 }
 
+                Console.WriteLine($"Updated beställning {id}: {System.Text.Json.JsonSerializer.Serialize(beställning)}");
                 return Ok(beställning);
             }
             catch (Exception ex)
@@ -179,19 +190,19 @@ namespace MormorsBageri.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Planerare")]
+        [Authorize(Roles = "Admin,Planerare")]
         public async Task<IActionResult> TaBortBeställning(int id)
         {
             try
             {
-                var beställning = _context.Beställningar.FirstOrDefault(b => b.BeställningId == id);
+                var beställning = await _context.Beställningar.FirstOrDefaultAsync(b => b.BeställningId == id);
                 if (beställning == null)
                 {
                     return NotFound(new { error = $"Beställning med ID {id} hittades inte." });
                 }
 
-                var säljare = _context.Användare.FirstOrDefault(u => u.Användarnamn == beställning.Säljare);
-                var admins = _context.Användare.Where(u => u.Roll == Roller.Admin).ToList();
+                var säljare = await _context.Användare.FirstOrDefaultAsync(u => u.Användarnamn == beställning.Säljare);
+                var admins = await _context.Användare.Where(u => u.Roll == Roller.Admin).ToListAsync();
 
                 _context.Beställningar.Remove(beställning);
                 await _context.SaveChangesAsync();
@@ -216,6 +227,7 @@ namespace MormorsBageri.Controllers
                     }
                 }
 
+                Console.WriteLine($"Deleted beställning with ID {id}");
                 return Ok(new { message = $"Beställning med ID {id} har tagits bort." });
             }
             catch (Exception ex)

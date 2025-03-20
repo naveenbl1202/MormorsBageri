@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MormorsBageri")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9b52690bb539b5772296b3baf7510d4e71cb02d3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a5338a48a6d28ba484fc6bbb48f9254dbce65da9")]
 [assembly: System.Reflection.AssemblyProductAttribute("MormorsBageri")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MormorsBageri")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
