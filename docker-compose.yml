@@ -1,34 +1,21 @@
-﻿version: '3.8'
+version: '3.4'
+
 services:
-  backend:
+  mormorsbageri-api:
+    image: mormorsbageri-api:latest
     build:
       context: .
-      dockerfile: Dockerfile
     ports:
-      - "5139:80"
-    environment:
-      - PORT=80
-      - ConnectionStrings__DefaultConnection=Server=db;Database=mormorsbageridb;User=root;Password=root;Port=3306;
-      - Jwt__Key=${JWT_KEY}
-      - Jwt__Issuer=MormorsBageri
-      - Jwt__Audience=MormorsApp
-      - Email__FromEmail=mormorsbageri@gmail.com
-      - Email__SmtpHost=smtp.gmail.com
-      - Email__SmtpPort=587
-      - Email__Username=mormorsbageri@gmail.com
-      - Email__Password=${EMAIL_PASSWORD}
+      - "8080:80"
     depends_on:
-      - db
+      - mysql
 
-  db:
-    image: mysql:latest
-    ports:
-      - "3307:3306"
+  mysql:
+    image: mysql:8.0
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=mormorsbageridb
-    volumes:
-      - mysql-data:/var/lib/mysql
-
-volumes:
-  mysql-data:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mormorsbageri_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
