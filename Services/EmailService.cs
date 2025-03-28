@@ -1,53 +1,110 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging; // Add this
+using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace MormorsBageri.Services
 {
     public class EmailService
     {
-        private readonly IConfiguration _config;
-        private readonly ILogger<EmailService> _logger; // Add this
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IConfiguration config, ILogger<EmailService> logger)
+        public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
         {
-            _config = config;
+            _configuration = configuration;
             _logger = logger;
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                var emailAddress = new EmailAddressAttribute();
+                return emailAddress.IsValid(email);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // Synchronous method to match the call in AuthController.cs
+        public void SendEmail(string toEmail, string subject, string body)
+        {
+            try
+            {
+                SendEmailAsync(toEmail, subject, body).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to send email to {toEmail}. Error: {ex.Message}", ex);
+                throw;
+            }
         }
 
         public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
-            var fromEmail = Environment.GetEnvironmentVariable("EMAIL_FROM") ?? _config["Email:FromEmail"];
-            var smtpHost = Environment.GetEnvironmentVariable("EMAIL_SMTP_HOST") ?? _config["Email:SmtpHost"];
-            var smtpPortStr = Environment.GetEnvironmentVariable("EMAIL_SMTP_PORT") ?? _config["Email:SmtpPort"];
-            var username = Environment.GetEnvironmentVariable("EMAIL_USERNAME") ?? _config["Email:Username"];
-            var password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD") ?? _config["Email:Password"];
+            if (string.IsNullOrWhiteSpace(toEmail))
+                throw new ArgumentNullException(nameof(toEmail), "Recipient email cannot be null or empty.");
 
-            if (string.IsNullOrEmpty(fromEmail) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || !int.TryParse(smtpPortStr, out int smtpPort))
-            {
-                _logger.LogWarning("Email configuration is incomplete. Email not sent to {ToEmail}.", toEmail);
-                return; // Silent fail with logging instead of throwing
-            }
+            if (!IsValidEmail(toEmail))
+                throw new ArgumentException($"Invalid email address: {toEmail}", nameof(toEmail));
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Mormors Bageri", fromEmail));
-            message.To.Add(new MailboxAddress("", toEmail));
-            message.Subject = subject;
-            message.Body = new TextPart("plain") { Text = body };
+            if (string.IsNullOrWhiteSpace(subject))
+                throw new ArgumentNullException(nameof(subject), "Subject cannot be null or empty.");
+
+            if (string.IsNullOrWhiteSpace(body))
+                throw new ArgumentNullException(nameof(body), "Body cannot be null or empty.");
 
             try
             {
-                using var client = new SmtpClient();
-                await client.ConnectAsync(smtpHost, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync(username, password);
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
-                _logger.LogInformation("Email sent successfully to {ToEmail}.", toEmail);
+                var smtpServer = _configuration["Email:SmtpHost"];
+                var smtpPortString = _configuration["Email:SmtpPort"];
+                var smtpUsername = _configuration["Email:Username"];
+                var smtpPassword = _configuration["Email:Password"];
+                var fromEmail = _configuration["Email:FromEmail"];
+
+                if (string.IsNullOrWhiteSpace(smtpServer))
+                    throw new InvalidOperationException("SMTP host is not configured (Email:SmtpHost).");
+                if (string.IsNullOrWhiteSpace(smtpPortString) || !int.TryParse(smtpPortString, out int smtpPort))
+                    throw new InvalidOperationException("SMTP port is not configured or invalid (Email:SmtpPort).");
+                if (string.IsNullOrWhiteSpace(smtpUsername))
+                    throw new InvalidOperationException("SMTP username is not configured (Email:Username).");
+                if (string.IsNullOrWhiteSpace(smtpPassword))
+                    throw new InvalidOperationException("SMTP password is not configured (Email:Password).");
+                if (string.IsNullOrWhiteSpace(fromEmail))
+                    throw new InvalidOperationException("From email is not configured (Email:FromEmail).");
+
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Mormors Bageri", fromEmail));
+                message.To.Add(new MailboxAddress("", toEmail));
+                message.Subject = subject;
+
+                var bodyBuilder = new BodyBuilder { TextBody = body };
+                message.Body = bodyBuilder.ToMessageBody();
+
+                using (var client = new SmtpClient())
+                {
+                    _logger.LogInformation($"Connecting to SMTP server {smtpServer}:{smtpPort}");
+                    await client.ConnectAsync(smtpServer, smtpPort, MailKit.Security.SecureSocketOptions.StartTls);
+                    _logger.LogInformation($"Authenticating with username {smtpUsername}");
+                    await client.AuthenticateAsync(smtpUsername, smtpPassword);
+                    _logger.LogInformation($"Sending email to {toEmail} with subject: {subject}");
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+
+                _logger.LogInformation($"Email successfully sent to {toEmail} with subject: {subject}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to send email to {ToEmail}.", toEmail);
+                _logger.LogError($"Failed to send email to {toEmail}. Error: {ex.Message}", ex);
+                throw;
             }
         }
     }

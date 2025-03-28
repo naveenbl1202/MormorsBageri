@@ -115,8 +115,4 @@ C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\BouncyCastle.Cryp
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MailKit.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MimeKit.dll
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.sourcelink.json
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\out\web.config
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\out\appsettings.Development.json
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\out\appsettings.json
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\out\MormorsBageri.deps.json
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\out\MormorsBageri.runtimeconfig.json

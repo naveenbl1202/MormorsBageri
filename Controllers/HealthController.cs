@@ -21,8 +21,11 @@ namespace MormorsBageri.Controllers
 
             if (string.IsNullOrEmpty(fromEmail))
             {
+                Console.WriteLine("Email configuration check failed: FromEmail is missing");
                 return StatusCode(503, new { status = "Email configuration missing" });
             }
+
+            Console.WriteLine("Email configuration check successful: FromEmail is configured");
             return Ok(new { status = "Email configuration OK" });
         }
     }
