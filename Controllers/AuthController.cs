@@ -29,6 +29,33 @@ namespace MormorsBageri.Controllers
             _emailService = emailService;
         }
 
+        [HttpGet("users")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult GetAllUsers()
+        {
+            Console.WriteLine($"Get all users attempt by Admin '{User.Identity.Name}'");
+            try
+            {
+                var users = _context.Användare
+                    .Select(u => new
+                    {
+                        u.AnvändareId,
+                        u.Användarnamn,
+                        u.Roll,
+                        u.Email,
+                        u.Låst
+                    })
+                    .ToList();
+                Console.WriteLine($"Fetched {users.Count} users by Admin '{User.Identity.Name}'");
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching users: {ex.Message}");
+                return StatusCode(500, new { error = "Databasfel vid hämtning av användare. Kontakta support." });
+            }
+        }
+
         [HttpPost("initial-admin-setup")]
         public IActionResult InitialAdminSetup([FromBody] RegisterDTO register)
         {
@@ -81,6 +108,34 @@ namespace MormorsBageri.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Registrera([FromBody] RegisterDTO register)
         {
+            // Log authorization context
+            Console.WriteLine($"Admin user: {User.Identity.Name}, Roles: {string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))}");
+
+            // Safely log raw body (optional, can remove if not needed)
+            string rawBody = "Unable to read body";
+            try
+            {
+                if (Request.Body.CanSeek)
+                {
+                    Request.Body.Position = 0;
+                    using (var reader = new StreamReader(Request.Body, Encoding.UTF8, true, 1024, true))
+                    {
+                        rawBody = reader.ReadToEndAsync().Result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to read raw body: {ex.Message}");
+            }
+            Console.WriteLine($"Raw request body: {rawBody}");
+
+            if (register == null)
+            {
+                Console.WriteLine("Register failed: DTO is null");
+                return BadRequest(new { error = "Registreringsdata saknas." });
+            }
+
             Console.WriteLine($"Register attempt: Användarnamn={register.Användarnamn}, Roll={register.Roll}, Email={register.Email}, Låst={register.Låst}");
             if (_context.Användare.Any(u => u.Användarnamn == register.Användarnamn))
             {
@@ -106,8 +161,8 @@ namespace MormorsBageri.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Register failed: Database error - {ex.Message}");
-                return StatusCode(500, new { error = "Fel vid registrering av användare. Kontakta support." });
+                Console.WriteLine($"Register failed: Database error - {ex.Message}, StackTrace: {ex.StackTrace}");
+                return StatusCode(500, new { error = "Fel vid registrering av användare. Kontakta support.", details = ex.Message });
             }
         }
 

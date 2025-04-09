@@ -17,7 +17,9 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         // Restore PascalCase to match frontend expectations
+        
         options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -96,9 +98,25 @@ app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
     {
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"error\": \"Ett oväntat fel inträffade. Kontakta support.\"}");
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        var exception = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>()?.Error;
+        if (exception != null)
+        {
+            logger.LogError(exception, "Unhandled exception occurred in request to {Path}", context.Request.Path);
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                error = "Ett oväntat fel inträffade. Kontakta support.",
+                details = exception.Message, // Add this for debugging
+                stackTrace = exception.StackTrace // Add this too
+            }));
+        }
+        else
+        {
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsync("{\"error\": \"Ett oväntat fel inträffade. Kontakta support.\"}");
+        }
     });
 });
 

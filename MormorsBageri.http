@@ -1,6 +1,13 @@
-@MormorsBageri_HostAddress = http://localhost:5139
+@MormorsBageri_HostAddress = https://localhost:7130
 
 GET {{MormorsBageri_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+PUT {{MormorsBageri_HostAddress}}/api/auth/ändra-lösenord/string
+Content-Type: application/json
+
+"string"
 
 ###

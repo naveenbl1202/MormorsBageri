@@ -36,12 +36,16 @@ namespace MormorsBageri.Controllers
                     .ThenInclude(bd => bd.Produkt)
                     .AsQueryable();
 
+                Console.WriteLine($"Total orders before filtering: {await query.CountAsync()}");
+
                 if (User.IsInRole("Säljare"))
                 {
                     var username = User.FindFirst(ClaimTypes.Name)?.Value;
+                    Console.WriteLine($"User is Säljare, filtering by username: {username}");
                     if (!string.IsNullOrEmpty(username))
                     {
                         query = query.Where(b => b.Säljare == username);
+                        Console.WriteLine($"Orders after Säljare filtering: {await query.CountAsync()}");
                     }
                 }
 
@@ -52,6 +56,12 @@ namespace MormorsBageri.Controllers
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
+
+                foreach (var order in orders)
+                {
+                    order.Beställningsdatum = DateTime.SpecifyKind(order.Beställningsdatum, DateTimeKind.Utc);
+                    order.PreliminärtLeveransdatum = DateTime.SpecifyKind(order.PreliminärtLeveransdatum, DateTimeKind.Utc);
+                }
 
                 var response = new
                 {
@@ -67,7 +77,7 @@ namespace MormorsBageri.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching orders: {ex.Message}");
+                Console.WriteLine($"Error fetching orders: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Databasfel vid hämtning av beställningar. Kontakta support." });
             }
         }
@@ -80,20 +90,28 @@ namespace MormorsBageri.Controllers
             {
                 var now = DateTime.UtcNow;
                 var threeDaysFromNow = now.AddDays(3);
+                Console.WriteLine($"Now: {now}, ThreeDaysFromNow: {threeDaysFromNow}");
 
                 var query = _context.Beställningar
                     .Include(b => b.Butik)
                     .Include(b => b.Beställningsdetaljer)
                     .ThenInclude(bd => bd.Produkt)
-                    .Where(b => b.PreliminärtLeveransdatum >= now && b.PreliminärtLeveransdatum <= threeDaysFromNow)
                     .AsQueryable();
+
+                Console.WriteLine($"Total orders before filtering: {await query.CountAsync()}");
+
+                query = query.Where(b => b.PreliminärtLeveransdatum >= now &&
+                                        b.PreliminärtLeveransdatum <= threeDaysFromNow);
+                Console.WriteLine($"Orders after date filtering: {await query.CountAsync()}");
 
                 if (User.IsInRole("Säljare"))
                 {
                     var username = User.FindFirst(ClaimTypes.Name)?.Value;
+                    Console.WriteLine($"User is Säljare, filtering by username: {username}");
                     if (!string.IsNullOrEmpty(username))
                     {
                         query = query.Where(b => b.Säljare == username);
+                        Console.WriteLine($"Orders after Säljare filtering: {await query.CountAsync()}");
                     }
                 }
 
@@ -101,12 +119,18 @@ namespace MormorsBageri.Controllers
                     .OrderBy(b => b.PreliminärtLeveransdatum)
                     .ToListAsync();
 
+                foreach (var order in upcomingDeliveries)
+                {
+                    order.Beställningsdatum = DateTime.SpecifyKind(order.Beställningsdatum, DateTimeKind.Utc);
+                    order.PreliminärtLeveransdatum = DateTime.SpecifyKind(order.PreliminärtLeveransdatum, DateTimeKind.Utc);
+                }
+
                 Console.WriteLine($"Fetched {upcomingDeliveries.Count} upcoming deliveries by user '{User.Identity.Name ?? "Unknown"}' (Role: {User.FindFirst(ClaimTypes.Role)?.Value ?? "Unknown"})");
                 return Ok(upcomingDeliveries);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching upcoming deliveries: {ex.Message}");
+                Console.WriteLine($"Error fetching upcoming deliveries: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Databasfel vid hämtning av kommande leveranser. Kontakta support." });
             }
         }
@@ -117,14 +141,9 @@ namespace MormorsBageri.Controllers
         {
             try
             {
-                // Total Orders
                 var totalOrders = await _context.Beställningar.CountAsync();
-
-                // Total Revenue
                 var totalRevenue = await _context.Beställningsdetaljer
-                    .SumAsync(bd => bd.Antal * (bd.Styckpris - bd.Rabatt));
-
-                // Most Ordered Products
+                    .SumAsync(bd => bd.Antal * (bd.Styckpris - Math.Min(bd.Rabatt, bd.Styckpris)));
                 var mostOrderedProducts = await _context.Beställningsdetaljer
                     .GroupBy(bd => bd.ProduktId)
                     .Select(g => new
@@ -136,8 +155,6 @@ namespace MormorsBageri.Controllers
                     .OrderByDescending(x => x.TotalAntal)
                     .Take(5)
                     .ToListAsync();
-
-                // Orders by Store
                 var ordersByStore = await _context.Beställningar
                     .GroupBy(b => b.ButikId)
                     .Select(g => new
@@ -162,7 +179,7 @@ namespace MormorsBageri.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching dashboard statistics: {ex.Message}");
+                Console.WriteLine($"Error fetching dashboard statistics: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Databasfel vid hämtning av statistik. Kontakta support." });
             }
         }
@@ -177,15 +194,21 @@ namespace MormorsBageri.Controllers
                     .Include(b => b.Butik)
                     .Include(b => b.Beställningsdetaljer)
                     .ThenInclude(bd => bd.Produkt)
-                    .Where(b => b.ButikId == butikId)
                     .AsQueryable();
+
+                Console.WriteLine($"Total orders before filtering for ButikId {butikId}: {await query.CountAsync()}");
+
+                query = query.Where(b => b.ButikId == butikId);
+                Console.WriteLine($"Orders after ButikId filtering: {await query.CountAsync()}");
 
                 if (User.IsInRole("Säljare"))
                 {
                     var username = User.FindFirst(ClaimTypes.Name)?.Value;
+                    Console.WriteLine($"User is Säljare, filtering by username: {username}");
                     if (!string.IsNullOrEmpty(username))
                     {
                         query = query.Where(b => b.Säljare == username);
+                        Console.WriteLine($"Orders after Säljare filtering: {await query.CountAsync()}");
                     }
                 }
 
@@ -193,13 +216,62 @@ namespace MormorsBageri.Controllers
                     .OrderByDescending(b => b.Beställningsdatum)
                     .ToListAsync();
 
+                foreach (var order in orders)
+                {
+                    order.Beställningsdatum = DateTime.SpecifyKind(order.Beställningsdatum, DateTimeKind.Utc);
+                    order.PreliminärtLeveransdatum = DateTime.SpecifyKind(order.PreliminärtLeveransdatum, DateTimeKind.Utc);
+                }
+
                 Console.WriteLine($"Fetched {orders.Count} orders for store {butikId} by user '{User.Identity.Name ?? "Unknown"}' (Role: {User.FindFirst(ClaimTypes.Role)?.Value ?? "Unknown"})");
                 return Ok(orders);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error fetching orders for store {butikId}: {ex.Message}");
+                Console.WriteLine($"Error fetching orders for store {butikId}: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Databasfel vid hämtning av beställningar. Kontakta support." });
+            }
+        }
+
+        [HttpGet("order/{id}")]
+        [Authorize(Roles = "Admin,Planerare,Säljare")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            try
+            {
+                var query = _context.Beställningar
+                    .Include(b => b.Butik)
+                    .Include(b => b.Beställningsdetaljer)
+                    .ThenInclude(bd => bd.Produkt)
+                    .AsQueryable();
+
+                if (User.IsInRole("Säljare"))
+                {
+                    var username = User.FindFirst(ClaimTypes.Name)?.Value;
+                    Console.WriteLine($"User is Säljare, filtering by username: {username}");
+                    if (!string.IsNullOrEmpty(username))
+                    {
+                        query = query.Where(b => b.Säljare == username);
+                    }
+                }
+
+                var order = await query.FirstOrDefaultAsync(b => b.BeställningId == id);
+
+                if (order == null)
+                {
+                    Console.WriteLine($"Order with ID {id} not found for user '{User.Identity.Name ?? "Unknown"}' (Role: {User.FindFirst(ClaimTypes.Role)?.Value ?? "Unknown"})");
+                    return NotFound(new { error = $"Beställning med ID {id} finns inte." });
+                }
+
+                order.Beställningsdatum = DateTime.SpecifyKind(order.Beställningsdatum, DateTimeKind.Utc);
+                order.PreliminärtLeveransdatum = DateTime.SpecifyKind(order.PreliminärtLeveransdatum, DateTimeKind.Utc);
+
+                Console.WriteLine($"Fetched order with ID {id} by user '{User.Identity.Name ?? "Unknown"}' (Role: {User.FindFirst(ClaimTypes.Role)?.Value ?? "Unknown"})");
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching order with ID {id}: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                return StatusCode(500, new { error = "Databasfel vid hämtning av beställning. Kontakta support." });
             }
         }
 
@@ -213,9 +285,29 @@ namespace MormorsBageri.Controllers
                 return BadRequest(new { error = "Beställningsdata saknas eller är ogiltig." });
             }
 
+            // Validate Beställningsdetaljer
+            foreach (var detalj in beställning.Beställningsdetaljer)
+            {
+                // Validate Rabatt
+                if (detalj.Rabatt > detalj.Styckpris)
+                {
+                    Console.WriteLine($"Create order failed: Rabatt ({detalj.Rabatt}) exceeds Styckpris ({detalj.Styckpris}) for ProduktId {detalj.ProduktId}");
+                    return BadRequest(new { error = $"Rabatt ({detalj.Rabatt}) får inte överstiga styckpriset ({detalj.Styckpris}) för produkt med ID {detalj.ProduktId}." });
+                }
+
+                // Validate ProduktId
+                var butik = await _context.Butiker.FindAsync(beställning.ButikId);
+                if (butik == null)
+                {
+                    Console.WriteLine($"Create order failed: Butik with ID {beställning.ButikId} not found");
+                    return BadRequest(new { error = $"Butik med ID {beställning.ButikId} finns inte." });
+                }
+            }
+
             try
             {
                 beställning.Beställningsdatum = DateTime.UtcNow;
+                beställning.PreliminärtLeveransdatum = DateTime.SpecifyKind(beställning.PreliminärtLeveransdatum, DateTimeKind.Utc);
                 _context.Beställningar.Add(beställning);
                 await _context.SaveChangesAsync();
 
@@ -256,13 +348,13 @@ namespace MormorsBageri.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error creating order: {ex.Message}");
+                Console.WriteLine($"Error creating order: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Databasfel vid skapande av beställning. Kontakta support." });
             }
         }
 
         [HttpPut("{id}")]
-        [Authorize(Policy = "PlanerareOnly")] // Restrict to Planerare only using policy
+        [Authorize(Policy = "PlanerareOnly")]
         public async Task<IActionResult> UpdateOrderDeliveryDate(int id, [FromBody] BeställningsUpdateDTO updateDTO)
         {
             try
@@ -274,20 +366,20 @@ namespace MormorsBageri.Controllers
                     return NotFound(new { error = $"Beställning med ID {id} finns inte." });
                 }
 
-                beställning.PreliminärtLeveransdatum = updateDTO.PreliminärtLeveransdatum;
+                beställning.PreliminärtLeveransdatum = DateTime.SpecifyKind(updateDTO.PreliminärtLeveransdatum, DateTimeKind.Utc);
                 await _context.SaveChangesAsync();
                 Console.WriteLine($"Updated delivery date for order {id} by user '{User.Identity.Name ?? "Unknown"}' (Role: {User.FindFirst(ClaimTypes.Role)?.Value ?? "Unknown"})");
                 return Ok(new { message = $"Leveransdatum för beställning {id} har uppdaterats." });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error updating delivery date for order {id}: {ex.Message}");
+                Console.WriteLine($"Error updating delivery date for order {id}: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Databasfel vid uppdatering av leveransdatum. Kontakta support." });
             }
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminOrPlanerare")] // Restrict to Admin and Planerare using policy
+        [Authorize(Policy = "AdminOrPlanerare")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             try
@@ -306,7 +398,7 @@ namespace MormorsBageri.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting order {id}: {ex.Message}");
+                Console.WriteLine($"Error deleting order {id}: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return StatusCode(500, new { error = "Databasfel vid borttagning av beställning. Kontakta support." });
             }
         }

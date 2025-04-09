@@ -1,12 +1,15 @@
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\appsettings.json
+C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\out\appsettings.json
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MormorsBageri.exe
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MormorsBageri.deps.json
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MormorsBageri.runtimeconfig.json
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MormorsBageri.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MormorsBageri.pdb
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Humanizer.dll
+C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MailKit.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Microsoft.AspNetCore.Authorization.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Microsoft.AspNetCore.Metadata.dll
@@ -29,6 +32,7 @@ C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Microsoft.Identit
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MimeKit.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Mono.TextTemplating.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MySqlConnector.dll
 C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
@@ -97,6 +101,7 @@ C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.Ass
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.AssemblyInfo.cs
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.csproj.CoreCompileInputs.cache
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.sourcelink.json
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\staticwebassets\msbuild.MormorsBageri.Microsoft.AspNetCore.StaticWebAssets.props
@@ -111,8 +116,3 @@ C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\refint\MormorsBag
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.pdb
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.genruntimeconfig.cache
 C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\ref\MormorsBageri.dll
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MailKit.dll
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\MimeKit.dll
-C:\Users\navee\Downloads\MormorsBageri-master\obj\Debug\net8.0\MormorsBageri.sourcelink.json
-C:\Users\navee\Downloads\MormorsBageri-master\bin\Debug\net8.0\out\appsettings.json
